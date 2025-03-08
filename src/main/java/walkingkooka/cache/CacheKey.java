@@ -69,7 +69,7 @@ public final class CacheKey implements Name,
         CharPredicates.failIfNullOrEmptyOrInitialAndPartFalse(name, CacheKey.class.getSimpleName(), INITIAL, PART);
 
         InvalidTextLengthException.throwIfFail(
-            "function name",
+            "cacheKey",
             name,
             MIN_LENGTH,
             MAX_LENGTH
