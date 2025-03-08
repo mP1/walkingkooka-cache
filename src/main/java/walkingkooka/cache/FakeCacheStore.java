@@ -17,24 +17,11 @@
 
 package walkingkooka.cache;
 
-import walkingkooka.reflect.PublicStaticHelper;
+import walkingkooka.store.FakeStore;
 
-/**
- * A collection of {@link CacheStore}.
- */
-public final class CacheStores implements PublicStaticHelper {
+public class FakeCacheStore extends FakeStore<CacheKey, CacheValue> implements CacheStore {
 
-    /**
-     * {@see FakeCacheStore}
-     */
-    public static CacheStore fake() {
-        return new FakeCacheStore();
-    }
-
-    /**
-     * Stop creation
-     */
-    private CacheStores() {
-        throw new UnsupportedOperationException();
+    public FakeCacheStore() {
+        super();
     }
 }
