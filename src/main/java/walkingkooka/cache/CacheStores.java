@@ -32,6 +32,13 @@ public final class CacheStores implements PublicStaticHelper {
     }
 
     /**
+     * {@see TreeMapStoreCacheStore}
+     */
+    public static CacheStore treeMap() {
+        return TreeMapStoreCacheStore.empty();
+    }
+
+    /**
      * Stop creation
      */
     private CacheStores() {
