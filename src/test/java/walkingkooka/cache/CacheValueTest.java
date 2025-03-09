@@ -30,19 +30,38 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<CacheValue>,
     ToStringTesting<CacheValue> {
 
+    private final static CacheKey KEY = CacheKey.with("key123");
+
     private final static Optional<Object> VALUE = Optional.of("Hello");
+
+    @Test
+    public void testWithWithNullKeyFails() {
+        assertThrows(
+            NullPointerException.class,
+            () -> CacheValue.with(
+                null,
+                VALUE
+            )
+        );
+    }
 
     @Test
     public void testWithWithNullValueFails() {
         assertThrows(
             NullPointerException.class,
-            () -> CacheValue.with(null)
+            () -> CacheValue.with(
+                KEY,
+                null
+            )
         );
     }
 
     @Test
     public void testWith() {
-        final CacheValue cacheValue = CacheValue.with(VALUE);
+        final CacheValue cacheValue = CacheValue.with(
+            KEY,
+            VALUE
+        );
         this.valueAndCheck(
             cacheValue,
             VALUE
@@ -57,6 +76,58 @@ public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<Cache
         );
     }
 
+    // setKey...........................................................................................................
+
+    @Test
+    public void testSetKeyWithNullFails() {
+        assertThrows(
+            NullPointerException.class,
+            () -> this.createObject().setKey(null)
+        );
+    }
+
+    @Test
+    public void testSetKeyWithSame() {
+        final CacheValue cacheValue = CacheValue.with(
+            KEY,
+            VALUE
+        );
+
+        assertSame(
+            cacheValue,
+            cacheValue.setKey(KEY)
+        );
+    }
+
+    @Test
+    public void testSetKeyWithDifferent() {
+        final CacheValue cacheValue = CacheValue.with(
+            KEY,
+            VALUE
+        );
+
+        final CacheKey differentKey = CacheKey.with("Different");
+
+        final CacheValue different = cacheValue.setKey(differentKey);
+        assertNotSame(
+            cacheValue,
+            different
+        );
+
+        this.keyAndCheck(
+            different,
+            differentKey
+        );
+    }
+
+    private void keyAndCheck(final CacheValue value,
+                             final CacheKey expected) {
+        this.checkEquals(
+            expected,
+            value.key()
+        );
+    }
+    
     // setValue.........................................................................................................
 
     @Test
@@ -69,7 +140,10 @@ public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<Cache
 
     @Test
     public void testSetValueWithSame() {
-        final CacheValue cacheValue = CacheValue.with(VALUE);
+        final CacheValue cacheValue = CacheValue.with(
+            KEY,
+            VALUE
+        );
 
         assertSame(
             cacheValue,
@@ -79,7 +153,10 @@ public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<Cache
 
     @Test
     public void testSetValueWithDifferent() {
-        final CacheValue cacheValue = CacheValue.with(VALUE);
+        final CacheValue cacheValue = CacheValue.with(
+            KEY,
+            VALUE
+        );
 
         final Optional<Object> differentValue = Optional.of("Different");
 
@@ -97,9 +174,34 @@ public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<Cache
 
     // Object...........................................................................................................
 
+    @Test
+    public void testEqualsDifferentKey() {
+        this.checkNotEquals(
+            CacheValue.with(
+                CacheKey.with("different123"),
+                VALUE
+            )
+        );
+    }
+
+    @Test
+    public void testEqualsDifferentValue() {
+        this.checkNotEquals(
+            CacheValue.with(
+                KEY,
+                Optional.of(
+                    "different " + VALUE
+                )
+            )
+        );
+    }
+
     @Override
     public CacheValue createObject() {
-        return CacheValue.with(VALUE);
+        return CacheValue.with(
+            KEY,
+            VALUE
+        );
     }
 
     // toString.........................................................................................................
@@ -108,7 +210,7 @@ public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<Cache
     public void testToString() {
         this.toStringAndCheck(
             this.createObject(),
-            "value=\"Hello\""
+            "key123=\"Hello\""
         );
     }
 

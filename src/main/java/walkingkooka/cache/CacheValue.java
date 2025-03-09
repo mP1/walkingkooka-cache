@@ -18,6 +18,7 @@
 package walkingkooka.cache;
 
 import walkingkooka.Cast;
+import walkingkooka.HasId;
 import walkingkooka.ToStringBuilder;
 import walkingkooka.Value;
 
@@ -28,15 +29,21 @@ import java.util.Optional;
  * A value type that holds the cache value and some extra meta data.
  * Instances are not meant be marshalled to JSON or serializable.
  */
-public final class CacheValue implements Value<Optional<Object>> {
+public final class CacheValue implements Value<Optional<Object>>,
+    HasId<Optional<CacheKey>>,
+    Comparable<CacheValue>{
 
-    public static CacheValue with(final Optional<Object> value) {
+    public static CacheValue with(final CacheKey key,
+                                  final Optional<Object> value) {
         return new CacheValue(
+            Objects.requireNonNull(key, "key"),
             Objects.requireNonNull(value, "value")
         );
     }
 
-    private CacheValue(final Optional<Object> value) {
+    private CacheValue(final CacheKey key,
+                       final Optional<Object> value) {
+        this.key = key;
         this.value = value;
     }
 
@@ -56,15 +63,41 @@ public final class CacheValue implements Value<Optional<Object>> {
         return this.value.equals(value) ?
             this :
             new CacheValue(
+                this.key,
                 Objects.requireNonNull(value, "value")
             );
     }
+
+    // HasId............................................................................................................
+
+    @Override
+    public Optional<CacheKey> id() {
+        return Optional.of(
+            this.key()
+        );
+    }
+
+    public CacheKey key() {
+        return this.key;
+    }
+
+    public CacheValue setKey(final CacheKey key) {
+        return this.key.equals(key) ?
+            this :
+            new CacheValue(
+                Objects.requireNonNull(key, "key"),
+                this.value
+            );
+    }
+
+    private final CacheKey key;
 
     // Object...........................................................................................................
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(
+        return Objects.hash(
+            this.key,
             this.value
         );
     }
@@ -77,14 +110,23 @@ public final class CacheValue implements Value<Optional<Object>> {
     }
 
     private boolean equals0(final CacheValue other) {
-        return this.value.equals(other.value);
+        return this.key.equals(other.key) &&
+            this.value.equals(other.value);
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.empty()
-            .label("value")
+            .label(this.key.toString())
+            .separator("=")
             .value(this.value)
             .build();
+    }
+
+    // Comparable.......................................................................................................
+
+    @Override
+    public int compareTo(final CacheValue other) {
+        return this.key.compareTo(other.key());
     }
 }
