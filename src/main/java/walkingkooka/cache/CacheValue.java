@@ -21,6 +21,8 @@ import walkingkooka.Cast;
 import walkingkooka.HasId;
 import walkingkooka.ToStringBuilder;
 import walkingkooka.Value;
+import walkingkooka.text.printer.IndentingPrinter;
+import walkingkooka.text.printer.TreePrintable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -31,7 +33,8 @@ import java.util.Optional;
  */
 public final class CacheValue implements Value<Optional<Object>>,
     HasId<Optional<CacheKey>>,
-    Comparable<CacheValue>{
+    Comparable<CacheValue>,
+    TreePrintable {
 
     public static CacheValue with(final CacheKey key,
                                   final Optional<Object> value) {
@@ -128,5 +131,23 @@ public final class CacheValue implements Value<Optional<Object>>,
     @Override
     public int compareTo(final CacheValue other) {
         return this.key.compareTo(other.key());
+    }
+
+    // TreePrintable....................................................................................................
+
+    @Override
+    public void printTree(final IndentingPrinter printer) {
+        printer.println(this.key.toString());
+        printer.indent();
+        {
+            final Optional<Object> value = this.value();
+            if(value.isPresent()) {
+                TreePrintable.printTreeOrToString(
+                    value.get(),
+                    printer
+                );
+            }
+        }
+        printer.outdent();
     }
 }
