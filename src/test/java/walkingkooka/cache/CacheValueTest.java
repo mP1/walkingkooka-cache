@@ -20,6 +20,7 @@ package walkingkooka.cache;
 import org.junit.jupiter.api.Test;
 import walkingkooka.HashCodeEqualsDefinedTesting2;
 import walkingkooka.ToStringTesting;
+import walkingkooka.text.printer.TreePrintableTesting;
 
 import java.util.Optional;
 
@@ -28,7 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<CacheValue>,
-    ToStringTesting<CacheValue> {
+    ToStringTesting<CacheValue>,
+    TreePrintableTesting {
 
     private final static CacheKey KEY = CacheKey.with("key123");
 
@@ -211,6 +213,17 @@ public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<Cache
         this.toStringAndCheck(
             this.createObject(),
             "key123=\"Hello\""
+        );
+    }
+
+    // TreePrintable....................................................................................................
+
+    @Test
+    public void testPrintTree() {
+        this.treePrintAndCheck(
+            this.createObject(),
+            "key123\n" +
+                "  Hello"
         );
     }
 
