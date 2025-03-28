@@ -223,7 +223,7 @@ public final class CacheValueTest implements HashCodeEqualsDefinedTesting2<Cache
         this.treePrintAndCheck(
             this.createObject(),
             "key123\n" +
-                "  Hello"
+                "  \"Hello\"\n"
         );
     }
 
