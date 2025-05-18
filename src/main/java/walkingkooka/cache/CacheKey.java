@@ -66,7 +66,12 @@ public final class CacheKey implements Name,
      * Factory that creates a {@link CacheKey}
      */
     public static CacheKey with(final String name) {
-        CharPredicates.failIfNullOrEmptyOrInitialAndPartFalse(name, CacheKey.class.getSimpleName(), INITIAL, PART);
+        CharPredicates.failIfNullOrEmptyOrInitialAndPartFalse(
+            name,
+            CacheKey.class.getSimpleName(),
+            INITIAL,
+            PART
+        );
 
         InvalidTextLengthException.throwIfFail(
             "cacheKey",
